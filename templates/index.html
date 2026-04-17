@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather App</title>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.5s;
+        }
+
+        /* ☀️ CLEAR */
+        body.clear {
+            background: linear-gradient(to top, #fddb92, #d1fdff);
+        }
+
+        /* ☁️ CLOUDS */
+        body.clouds {
+            background: linear-gradient(to top, #d7d2cc, #304352);
+        }
+
+        /* 🌧️ RAIN */
+        body.rain {
+            background: #2c3e50;
+            overflow: hidden;
+        }
+
+        body.rain::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url("https://i.ibb.co/7QpKsCX/rain.png");
+            animation: rain 0.5s linear infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes rain {
+            from { background-position: 0 0; }
+            to { background-position: 0 100%; }
+        }
+
+        /* ❄️ SNOW */
+        body.snow {
+            background: #83a4d4;
+        }
+
+        body.snow::before {
+            content: "❄️ ❄️ ❄️ ❄️ ❄️";
+            position: absolute;
+            font-size: 30px;
+            animation: snow 5s linear infinite;
+        }
+
+        @keyframes snow {
+            from { transform: translateY(-100px); }
+            to { transform: translateY(100vh); }
+        }
+
+        /* default */
+        body.default {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        }
+
+        /* Glass card */
+        .container {
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            width: 70%;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: none;
+            background: #ff4d88;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #ff1a66;
+        }
+
+        .weather-box {
+            margin-top: 20px;
+            color: white;
+        }
+
+        .icon {
+            font-size: 50px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body class="
+{% if weather %}
+    {% if 'rain' in weather.desc %}rain
+    {% elif 'cloud' in weather.desc %}clouds
+    {% elif 'clear' in weather.desc %}clear
+    {% elif 'snow' in weather.desc %}snow
+    {% else %}default
+    {% endif %}
+{% else %}
+default
+{% endif %}
+">
+
+<div class="container">
+
+    <h1>Weather 🌸</h1>
+
+    <form method="POST">
+        <input type="text" name="city" placeholder="Enter city">
+        <br>
+        <button type="submit">Get Weather</button>
+    </form>
+
+    {% if weather %}
+    <div class="weather-box">
+
+        <!-- ICON LOGIC -->
+        <div class="icon">
+            {% if "cloud" in weather.desc %}
+                ☁️
+            {% elif "rain" in weather.desc %}
+                🌧️
+            {% elif "clear" in weather.desc %}
+                ☀️
+            {% elif "snow" in weather.desc %}
+                ❄️
+            {% else %}
+                🌈
+            {% endif %}
+        </div>
+
+        <h2>{{ weather.city }}</h2>
+        <p>🌡 {{ weather.temp }} °C</p>
+        <p>☁ {{ weather.desc }}</p>
+
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <p style="color: yellow;">{{ error }}</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
