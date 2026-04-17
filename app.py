@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request
 import requests
-import os
+
 
 app = Flask(__name__)
 
-API_KEY = os.getenv("OPENWEATHER_API_KEY")  # read from environment
+# Your API key directly here
+API_KEY = "44a5802ccde6f71a45128a11e3608065"
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -12,10 +13,9 @@ def home():
     error = None
 
     if request.method == "POST":
-        print("FORM SUBMITTED")
         city = request.form["city"]
 
-        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid=44a5802ccde6f71a45128a11e3608065&units=metric"
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
         response = requests.get(url)
         data = response.json()
 
@@ -30,5 +30,7 @@ def home():
 
     return render_template("index.html", weather=weather, error=error)
 
+
+# ✅ REQUIRED for Render
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=10000)
